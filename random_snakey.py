@@ -80,6 +80,7 @@ def run(dir: str, name: str):
   
   x = 0
   y = 0
+  add(x, y, x_coords)
 
   all_x: list = [x]
   all_y: list = [y]
