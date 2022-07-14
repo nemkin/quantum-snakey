@@ -128,6 +128,8 @@ def run(dir: str, name: str):
 
   x_coords: dict = dict()
   
+  # TODO: Legyen két vége a proteineknek és felváltva növeljem
+  # TODO: Kellene adatbázis Dill-modell alapján hogy néz ki egy protein (valszleg eredeti 3D-sből kellene valahogy visszakonvertálni?)
   x = 0
   y = 0
   add(x, y, x_coords)
