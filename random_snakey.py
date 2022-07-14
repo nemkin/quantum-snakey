@@ -3,10 +3,12 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from pathlib import Path
 
 def add(x: int, y: int, x_coords: dict):
   x_coords[x] = x_coords.get(x, set([]))
   x_coords[x].add(y)
+
 
 def check(x: int, y: int, x_coords: dict, n: int):
   if x < -n or n < x:
@@ -16,26 +18,72 @@ def check(x: int, y: int, x_coords: dict, n: int):
   return x in x_coords.keys() and y in x_coords[x]
 
 
-def move(x: int, y: int, letters: list, x_coords: dict, n: int):
-  left = not check(x, y-1, x_coords, n)
-  right = not check(x, y+1, x_coords, n)
-  
-  if left and right:
-    choice = random.choice([True, False])
-    left = choice
-    right = not choice
+def move(x: int, y: int, x_coords: dict, n: int):
+  left = not check(x-1, y, x_coords, n)
+  right = not check(x+1, y, x_coords, n)
+  down = not check (x, y-1, x_coords, n)
+  up = not check (x, y+1, x_coords, n)
+
+  directions = []
 
   if left:
-    add(x, y-1, x_coords)
-    return x, y-1, letters[0]
+    directions.append('L')
   if right:
-    add(x, y+1, x_coords)
-    return x, y+1, letters[1]
+    directions.append('R')
+  if down:
+    directions.append('D')
+  if up:
+    directions.append('U')
 
-  raise Exception
+  if len(directions) == 0:
+    raise Exception
+
+  weights = []
+  for d in directions:
+    if d == 'L':
+      if 0 <= x: # Good
+        weights.append((abs(x)+1)*100)
+      else: # Bad
+        weights.append(1)
+    if d == 'R':
+      if x <= 0: # Good
+        weights.append((abs(x)+1)*100)
+      else: # Bad
+        weights.append(1)
+    if d == 'D':
+      if 0 <= y: # Good
+        weights.append((abs(y)+1)*100)
+      else: # Bad
+        weights.append(1)
+    if d == 'U':
+      if y <= 0:  # Good
+        weights.append((abs(y)+1)*100)
+      else:  # Bad
+        weights.append(1)
+  
+  # print(x,y)
+  # print(directions)
+  # print(weights)
+
+  choice = random.choices(directions, weights=weights, k=1)[0]
+  # print(choice)
+  # print()
+
+  if choice == 'L':
+    x = x-1
+  if choice == 'R':
+    x = x+1
+  if choice == 'D':
+    y = y-1
+  if choice == 'U':
+    y = y+1
+  
+  add(x, y, x_coords)
+  return x, y, choice
+
 
 def plot(x: list, y: list, n: int, name: str):
-  fig = plt.figure()
+  fig = plt.figure(figsize=(9, 9), dpi=100)
   ax = fig.add_subplot(111)
   line = Line2D(x, y)
   ax.add_line(line)
@@ -71,6 +119,7 @@ def add_counter(orig_path):
 
     return path
 
+
 def run(dir: str, name: str):
 
   n = 10
@@ -88,11 +137,7 @@ def run(dir: str, name: str):
 
   for i in range(k):
     try:
-      x, y, c = move(x, y, ["L", "R"], x_coords, n)
-      all_x.append(x)
-      all_y.append(y)
-      all_c.append(c)
-      y, x, c = move(y, x, ["U", "D"], x_coords, n)
+      x, y, c = move(x, y, x_coords, n)
       all_x.append(x)
       all_y.append(y)
       all_c.append(c)
@@ -109,7 +154,16 @@ def run(dir: str, name: str):
 
   plot(all_x, all_y, n, path)
 
-N: int = 100
 
-for x in range(N):
-  run('results', 'res')
+def main():
+  N: int = 100
+
+  os.makedirs('results')
+  #Path('results/.gitkeep').touch()
+
+  for x in range(N):
+    run('results', 'res')
+
+
+if __name__ == '__main__':
+  main()
