@@ -38,26 +38,27 @@ def move(x: int, y: int, x_coords: dict, n: int):
   if len(directions) == 0:
     raise Exception
 
+  mul=1
   weights = []
   for d in directions:
     if d == 'L':
       if 0 <= x: # Good
-        weights.append((abs(x)+1)*100)
+        weights.append((abs(x)+1)*mul)
       else: # Bad
         weights.append(1)
     if d == 'R':
       if x <= 0: # Good
-        weights.append((abs(x)+1)*100)
+        weights.append((abs(x)+1)*mul)
       else: # Bad
         weights.append(1)
     if d == 'D':
       if 0 <= y: # Good
-        weights.append((abs(y)+1)*100)
+        weights.append((abs(y)+1)*mul)
       else: # Bad
         weights.append(1)
     if d == 'U':
       if y <= 0:  # Good
-        weights.append((abs(y)+1)*100)
+        weights.append((abs(y)+1)*mul)
       else:  # Bad
         weights.append(1)
   
