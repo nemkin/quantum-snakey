@@ -123,7 +123,7 @@ def add_counter(orig_path):
 
 def run(dir: str, name: str):
 
-  n = 10
+  n = 15
   k = 1000
 
   x_coords: dict = dict()
@@ -159,7 +159,10 @@ def run(dir: str, name: str):
 def main():
   N: int = 100
 
-  os.makedirs('results')
+  try:
+    os.makedirs('results')
+  except:
+    pass
   #Path('results/.gitkeep').touch()
 
   for x in range(N):
