@@ -1,4 +1,5 @@
 import random
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
@@ -58,8 +59,19 @@ def plot(x: list, y: list, n: int, name: str):
   ax.grid(which='both')
 
   plt.savefig(f'{name}.png')
+  plt.close()
 
-def run(name: str):
+
+def add_counter(orig_path):
+    c = 1
+    path = f'{orig_path}_{c:04d}'
+    while os.path.exists(path + '.txt'):
+        c += 1
+        path = f'{orig_path}_{c:04d}'
+
+    return path
+
+def run(dir: str, name: str):
 
   n = 10
   k = 1000
@@ -86,14 +98,17 @@ def run(name: str):
     except:
       break
 
-  with open(f'{name}.txt', 'w') as f:
-    f.writelines(' '.join(map(str, all_x)))
-    f.writelines(' '.join(map(str, all_y)))
-    f.writelines(' '.join(map(str, all_y)))
+  path = add_counter(f'{dir}/{i:03d}_{name}')
+  print(path)
 
-  plot(all_x, all_y, n, name)
+  with open(f'{path}.txt', 'w') as f:
+    f.write(', '.join(map(str, all_x)) + "\n")
+    f.write(', '.join(map(str, all_y)) + "\n")
+    f.write(', '.join(map(str, all_c)) + "\n")
 
-N: int = 10
+  plot(all_x, all_y, n, path)
+
+N: int = 100
 
 for x in range(N):
-  run(f'results/{x:03d}')
+  run('results', 'res')
